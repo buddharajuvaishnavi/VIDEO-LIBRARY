@@ -1,0 +1,264 @@
+//IMPORTING PAKAGES -
+
+
+from tkinter import *
+import mysql11
+def display_movies(movies,userid,username):
+useid=userid
+usename=username
+def count_movie():
+global user_id, user_name, movie_id
+movie_id = movies_spinbox.get()[0:5]
+mysql11.update_count(movie_id,useid,usename)
+
+
+// CREATION OF WINDOW 
+
+
+window = Tk()
+window.title(&quot;Options&quot;)
+window.geometry(&#39;800x200&#39;)
+
+movies_format = []
+for movie in movies:
+movie_attr = &#39;&#39;
+for attr in movie:
+movie_attr += str(attr) + &#39; &#39;
+movies_format.append(movie_attr)
+movies_spinbox = Spinbox(window,
+values=tuple(movies_format))
+movies_spinbox.place(x=10, y=10, height=30, width=650)
+play_button = Button(window, text=&#39;Play&#39;,
+command=count_movie)
+play_button.place(x=10, y=40, height=30, width=50)
+
+window.mainloop()
+
+from tkinter import *
+import mysql.connector
+from tkinter import Entry
+import newwin
+import mysql11
+import mysql.connector
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;root&#39;,
+host=&#39;127.0.0.1&#39;,
+database=&#39;video_library&#39;)
+#cnx.autocommit(True)
+cursor= cnx.cursor()
+
+#Label(window,text=&quot;video library&quot;,font=(&quot;arial
+bold&quot;,35)).grid(row=1,colomn=1,sticky=W)
+window=Tk()
+window.title(&quot;Options&quot;)
+window.geometry(&#39;450x450&#39;)
+window.resizable(False,False)
+Label(window,text=&quot;VIDEO LIBRARY&quot;,font=(&quot;arial
+bold&quot;,35)).grid(row=1,column=1,sticky=W)
+Label(window,text=&quot;UserId&quot;).grid(row=2,column=0,sticky=W)
+Label(window,text=&quot;Username&quot;).grid(row=3,column=0,sticky=W)
+Label(window,text=&quot;Age&quot;).grid(row=4,column=0,sticky=W)
+Label(window,text=&quot;Country&quot;).grid(row=5,column=0,sticky=W)
+Label(window,text=&quot;Language&quot;).grid(row=6,column=0,sticky=W)
+Label(window,text=&quot;genre&quot;).grid(row=7,column=0,sticky=W)
+Label(window,text=&quot;VideoType&quot;).grid(row=8,column=0,sticky=W)
+Label(window,text=&quot;MovieName&quot;).grid(row=9,column=0,sticky=W)
+Label(window,text=&quot;Rating&quot;).grid(row=10,column=0,sticky=W)
+Label(window,text=&quot;Actor&quot;).grid(row=11,column=0,sticky=W)
+t1 = Entry(window,width=20,bg=&quot;white&quot;)
+t1.grid(row=2,column=1,sticky=W)
+t2 = Entry(window,width=20,bg=&quot;white&quot;)
+t2.grid(row=3,column=1,sticky=W)
+t3 = Entry(window,width=20,bg=&quot;white&quot;)
+t3.grid(row=4,column=1,sticky=W)
+t4 = Entry(window,width=20,bg=&quot;white&quot;)
+t4.grid(row=5,column=1,sticky=W)
+t5 = Entry(window,width=20,bg=&quot;white&quot;)
+
+t5.grid(row=6,column=1,sticky=W)
+t6 = Entry(window,width=20,bg=&quot;white&quot;)
+t6.grid(row=7,column=1,sticky=W)
+t7 = Entry(window,width=20,bg=&quot;white&quot;)
+t7.grid(row=8,column=1,sticky=W)
+t8 = Entry(window,width=20,bg=&quot;white&quot;)
+t8.grid(row=9,column=1,sticky=W)
+t10 = Entry(window,width=20,bg=&quot;white&quot;)
+t10.grid(row=11,column=1,sticky=W)
+t9 = Entry(window,width=20,bg=&quot;white&quot;)
+t9.grid(row=10,column=1,sticky=W)
+#t11 = Entry(window,width=20,bg=&quot;white&quot;)
+#t11.grid(row=10,column=1,sticky=W)
+def getmovielist():
+def construct_query(criteria):
+attributes = (&#39;age&#39;, &#39;country&#39;, &#39;language&#39;, &#39;genre&#39;,
+&#39;video_type&#39;, &#39;actor&#39;, &#39;rating&#39;, &#39;m_name&#39;)
+conditions = tuple(zip(attributes, criteria))
+query = &quot;SELECT * FROM movie_details WHERE &quot;
+query_conditions = []
+for condition in conditions:
+if condition[1] == &#39;&#39;: continue
+if condition[1].isdigit() or
+condition[1].replace(&#39;.&#39;, &#39;&#39;).isdigit():
+query_conditions.append(condition[0] + &quot; = &quot; +
+condition[1])
+elif condition[0] == &#39;m_name&#39;:
+query_conditions.append(condition[0] + &quot; LIKE
+&#39;%&quot; + condition[1] + &quot;%&#39;&quot;)
+else:
+query_conditions.append(condition[0] + &quot; = &#39;&quot; +
+condition[1] + &quot;&#39;&quot;)
+query_conditions = &#39; AND &#39;.join(query_conditions)
+query += query_conditions + &#39;;&#39;
+return query
+userid=t1.get()
+username=t2.get()
+age = t3.get()
+country = t4.get()
+language = t5.get()
+genre = t6.get()
+videotype = t7.get()
+moviename = t8.get()
+actor = t10.get()
+rating = t9.get()
+
+query = construct_query((age, country ,language, genre,
+videotype, actor,rating,moviename))
+movies = mysql11.search_result(query)
+newwin.display_movies(movies, userid, username)
+def submit():
+pass
+def gethitlist():
+win1=Tk()
+query=&quot;select * from movie_details where movie_id in
+(select t.movie_id from temp t)&quot;
+cursor.execute(query)
+out=cursor.fetchall()
+Label(win1,text=out).grid(row=1,column=0,sticky=W)
+uid=t1.get()
+def gethistory():
+#args=(uid)
+#cursor.callproc(&#39;proce1&#39;,args=(uid,))
+query=&quot;select * from movie_details where movie_id IN(select
+u.movie_id from user_history u where u.user_id=%s)&quot; % (t1.get())
+cursor.execute(query)
+q=cursor.fetchall()
+win=Tk()
+win.title(&#39;USER HISTORY&#39;)
+win.geometry(&#39;500x300&#39;)
+Label(win, text=q).grid(row=2, column=0, sticky=W)
+
+var = IntVar()
+#Button(window,text=&quot;Get User
+History&quot;,command=gethistory).grid(row=14,column=0,sticky=W)
+Button(window,text=&quot;GET USER
+HISTORY&quot;,command=gethistory).grid(row=16,column=1,sticky=W)
+Button(window,text=&quot;LIST OF HIT
+MOVIES&quot;,command=gethitlist).grid(row=18,column=1,sticky=W)
+var12=IntVar()
+Button(window,text=&quot;MOST
+VIEWED&quot;,command=mysql11.submit12).grid(row=17,column=1,sticky=W)
+Button(window,text=&quot;GET MOVIE
+LIST&quot;,command=getmovielist).grid(row=19,column=1,sticky=W)
+#t11= Entry(window,width=20,bg=&quot;white&quot;)
+#t11.grid(row=15,column=1,sticky=W)
+window.mainloop()
+
+import mysql.connector
+from tkinter import *
+from tkinter import Entry
+
+cnx = mysql.connector.connect(user=&#39;root&#39;, password=&#39;root&#39;,
+host=&#39;127.0.0.1&#39;,
+database=&#39;video_library&#39;)
+#cnx.autocommit(True)
+cursor= cnx.cursor()
+#def getval():
+# from optionspage import getvalues
+# uid=getvalues()
+user_id = -1
+user_name = &#39;&#39;
+movie_id = -1
+
+def search_result(query):
+cursor.execute(query)
+return cursor.fetchall()
+cnx.commit()
+def update_count(movie_id,useid,usename):
+query = &quot;SELECT count FROM movie_count WHERE movie_id = %s&quot;
+% (movie_id)
+cursor.execute(query)
+count = cursor.fetchall()[0][0]
+count = int(count) + 1
+query = &quot;UPDATE movie_count SET count = %s where movie_id =
+%s&quot; % (count, movie_id)
+cursor.execute(query)
+args= movie_id
+query= &quot;call update_perc(%s)&quot; % (movie_id)
+cursor.execute(query)
+uid=useid
+uname=usename
+#print(result_args[2])
+#uid=optionspage.getvalues()
+#print(uid)
+
+#print(optionspage.userid)
+query=&quot;insert into user_history values(%s,%s,%s)&quot;
+val=(uid,uname,movie_id)
+cursor.execute(query,val)
+#cursor.execute(query)
+cnx.commit()
+def submit12():
+#query=&quot;select * from movie_details where movie_id=(select
+movie_id from movie_count where count=(select max(c1.count) from
+movie_count c1))&quot;
+window = Tk()
+cursor.execute(&quot;select * from movie_details where movie_id
+IN(select movie_id from movie_count where count=(select
+max(c1.count) from movie_count c1))&quot;)
+data = cursor.fetchall()
+for row in data:
+print(row)
+print()
+
+Label(window, text=data).grid(row=1, column=0, sticky=W)
+cnx.commit;
+
+//CREATION OF TABLES:
+
+
+
+create table movie_details
+(
+movie_id integer primary key,
+country varchar(40) not null,
+language varchar(40) not null,
+movie_name varchar(40) not null,
+release_date date not null,
+genere varchar(40) not null,
+actor varchar(40) not null,
+video_type varchar(40) not null,
+age varchar(40) not null,
+rating integer not null
+);
+
+create table user_history
+(
+user_id integer not null,
+user_name varchar(20) not null,
+movie_id integer not null
+);
+
+create table movie_count
+(
+movie_id integer primary key,
+count integer not null,
+percentage integer not null,
+movie_verdict varchar(10) not null
+);
+
+/*for example if we have to insert the values we have to follow the syntax 
+
+insert into movie_details values
+(31600,'united_states','english','Gladiator',2000-04-03,'Action','Russell Crowe','Movie','U/A',8);
+
+insert into movie_count values
+(31600,0,0,'nill');*/
